@@ -76,6 +76,14 @@ def main():
     print("Price change rate:", panel["price_change_tomorrow"].mean())
     print("Discount increase rate:", panel["discount_increase_tomorrow"].mean())
 
+    # panel = panel.drop_duplicates(subset=["skuId", "date"])
+
+    # Keep one row per (skuId, date) to avoid duplicate transitions/leakiness
+    panel = panel.sort_values(["skuId", "date"]).drop_duplicates(subset=["skuId", "date"], keep="last")
+
+    dup = panel.duplicated(subset=["skuId", "date"]).mean()
+    print("Duplicate (skuId,date) rate:", dup)
+
     panel.to_csv(OUT_PANEL_PATH, index=False)
     print("Saved:", OUT_PANEL_PATH)
 
