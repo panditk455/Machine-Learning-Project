@@ -1,0 +1,17 @@
+{
+  "label":"QQ_FULL",
+  "model_path":"rf_outputs\/rf_randomsearch_bestmodel_QQ_FULL.joblib",
+  "csv_path":"QQ_model_ready.csv",
+  "extra_drop_cols":[
+
+  ],
+  "test_rows_used":317,
+  "waterfall_row_original_index":98,
+  "waterfall_row_position_in_test_sample":0,
+  "predicted_class":"Inconclusive",
+  "predicted_proba":{
+    "Inconclusive":0.670541278,
+    "Match":0.2582228634,
+    "NonMatch":0.0712358587
+  }
+}

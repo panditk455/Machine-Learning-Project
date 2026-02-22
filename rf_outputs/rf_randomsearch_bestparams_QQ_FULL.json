@@ -1,0 +1,7 @@
+{
+  "rf__n_estimators":600.0,
+  "rf__min_samples_split":2.0,
+  "rf__min_samples_leaf":2.0,
+  "rf__max_features":0.5,
+  "rf__max_depth":20.0
+}

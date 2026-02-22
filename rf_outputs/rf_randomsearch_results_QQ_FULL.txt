@@ -1,0 +1,25 @@
+Dataset: QQ_FULL
+Best CV balanced accuracy: 0.699518
+Best params: {'rf__n_estimators': 600, 'rf__min_samples_split': 2, 'rf__min_samples_leaf': 2, 'rf__max_features': 0.5, 'rf__max_depth': 20}
+OOB score (accuracy): 0.6930379746835443
+Test balanced accuracy: 0.691246
+
+Classification report:
+              precision    recall  f1-score   support
+
+Inconclusive       0.67      0.66      0.66       136
+       Match       0.72      0.73      0.72        74
+    NonMatch       0.68      0.68      0.68       107
+
+    accuracy                           0.68       317
+   macro avg       0.69      0.69      0.69       317
+weighted avg       0.68      0.68      0.68       317
+
+
+Labels order:
+['Inconclusive', 'Match', 'NonMatch']
+
+Confusion matrix:
+[[90 18 28]
+ [14 54  6]
+ [31  3 73]]

@@ -1,0 +1,19 @@
+{
+  "label":"RQ_OBJECTIVE",
+  "model_path":"rf_outputs\/rf_randomsearch_bestmodel_KQ_OBJECTIVE.joblib",
+  "csv_path":"KQ_model_ready.csv",
+  "extra_drop_cols":[
+    "Difficulty",
+    "Comparability",
+    "Phase"
+  ],
+  "test_rows_used":315,
+  "waterfall_row_original_index":1284,
+  "waterfall_row_position_in_test_sample":0,
+  "predicted_class":"Match",
+  "predicted_proba":{
+    "Inconclusive":0.087023475,
+    "Match":0.9109235448,
+    "NonMatch":0.0020529801
+  }
+}
