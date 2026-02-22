@@ -1,0 +1,24 @@
+Dataset: KQ_FULL
+n_estimators: 300
+OOB score (accuracy): 0.6285714285714286
+Selected features (12): ['Comparability', 'Subsession  Q2-K3', 'Difficulty', 'Q1 Quality (Voted)', 'Q1 Quality (prescreen)', 'Caliber Q2-K3', 'Caliber Q1', 'Phase', 'Intervening bullets (max)', 'Assigns (Baseline)', 'Intervening bullets (min)', 'Assigns (total)']
+
+Balanced accuracy (test): 0.651028
+
+Classification report:
+              precision    recall  f1-score   support
+
+Inconclusive       0.65      0.70      0.68       133
+       Match       0.78      0.60      0.68        93
+    NonMatch       0.57      0.65      0.61        89
+
+    accuracy                           0.66       315
+   macro avg       0.67      0.65      0.66       315
+weighted avg       0.67      0.66      0.66       315
+
+
+Labels: ['Inconclusive', 'Match', 'NonMatch']
+Confusion matrix:
+[[93 11 29]
+ [23 56 14]
+ [26  5 58]]

@@ -1,0 +1,24 @@
+Dataset: QQ_OBJECTIVE
+n_estimators: 150
+OOB score (accuracy): 0.6566455696202531
+Selected features (8): ['Caliber Q1', 'Caliber Q2-K3', 'Subsession  Q2-K3', 'Intervening bullets (min)', 'Q1 Quality (prescreen)', 'Q2 Quality (Voted)', 'Q2 Quality (prescreen)', 'Intervening bullets (max)']
+
+Balanced accuracy (test): 0.650243
+
+Classification report:
+              precision    recall  f1-score   support
+
+Inconclusive       0.63      0.53      0.58       136
+       Match       0.59      0.73      0.65        74
+    NonMatch       0.66      0.69      0.68       107
+
+    accuracy                           0.63       317
+   macro avg       0.63      0.65      0.64       317
+weighted avg       0.63      0.63      0.63       317
+
+
+Labels: ['Inconclusive', 'Match', 'NonMatch']
+Confusion matrix:
+[[72 33 31]
+ [13 54  7]
+ [29  4 74]]
