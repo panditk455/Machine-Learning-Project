@@ -1,0 +1,84 @@
+
+================================================================================
+Training Random Forest for: KQ
+================================================================================
+Dropping all-NaN columns: ['Q2 Quality (Voted)', 'Q2 Quality (prescreen)']
+Balanced accuracy: 0.664154042227715
+
+Classification report:
+               precision    recall  f1-score   support
+
+Inconclusive       0.65      0.73      0.69       133
+       Match       0.76      0.65      0.70        93
+    NonMatch       0.63      0.62      0.62        89
+
+    accuracy                           0.67       315
+   macro avg       0.68      0.66      0.67       315
+weighted avg       0.68      0.67      0.67       315
+
+Labels order: ['Inconclusive', 'Match', 'NonMatch']
+Confusion matrix:
+ [[97 12 24]
+ [25 60  8]
+ [27  7 55]]
+
+Top 20 permutation importances (KQ):
+Comparability                0.148972
+Difficulty                   0.079739
+Subsession  Q2-K3            0.046249
+Q1 Quality (Voted)           0.034875
+Intervening bullets (max)    0.029073
+Q1 Quality (prescreen)       0.021332
+Intervening bullets (min)    0.012729
+Caliber Q1                   0.004860
+Assigns (total)              0.004120
+Caliber Q2-K3                0.002904
+Phase                        0.001450
+Type                         0.000000
+Assigns (Baseline)          -0.001618
+Assigns (Baseline+Repeat)   -0.001930
+dtype: float64
+
+Saved: rf_perm_importance_KQ_noCset.csv
+
+================================================================================
+Training Random Forest for: QQ
+================================================================================
+Balanced accuracy: 0.654208702930528
+
+Classification report:
+               precision    recall  f1-score   support
+
+Inconclusive       0.61      0.67      0.64       136
+       Match       0.70      0.65      0.67        74
+    NonMatch       0.69      0.64      0.67       107
+
+    accuracy                           0.66       317
+   macro avg       0.67      0.65      0.66       317
+weighted avg       0.66      0.66      0.66       317
+
+Labels order: ['Inconclusive', 'Match', 'NonMatch']
+Confusion matrix:
+ [[91 19 26]
+ [21 48  5]
+ [36  2 69]]
+
+Top 20 permutation importances (QQ):
+Difficulty                   0.070505
+Intervening bullets (min)    0.041767
+Intervening bullets (max)    0.037734
+Caliber Q2-K3                0.034617
+Caliber Q1                   0.032163
+Subsession  Q2-K3            0.006737
+Phase                        0.002706
+Type                         0.000000
+Q2 Quality (prescreen)      -0.003908
+Assigns (total)             -0.004268
+Assigns (Baseline+Repeat)   -0.006353
+Assigns (Baseline)          -0.007551
+Q1 Quality (Voted)          -0.011369
+Q2 Quality (Voted)          -0.013564
+Q1 Quality (prescreen)      -0.021152
+dtype: float64
+
+Saved: rf_perm_importance_QQ_noCset.csv
