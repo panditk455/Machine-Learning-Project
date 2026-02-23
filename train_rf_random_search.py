@@ -232,16 +232,7 @@ def run_random_search(csv_path: str, label: str, extra_drop_cols=None, n_iter: i
     return best_model
 
 
-VARIANTS = {
-    "FULL": [],
-    "OBJECTIVE": ["Difficulty", "Comparability", "Phase"],
-}
 
 if __name__ == "__main__":
-    for vname, vdrop in VARIANTS.items():
-        run_random_search("KQ_model_ready.csv", f"KQ_{vname}", extra_drop_cols=vdrop, n_iter=30, cv_splits=5)
-        run_random_search("QQ_model_ready.csv", f"QQ_{vname}", extra_drop_cols=vdrop, n_iter=30, cv_splits=5)
-        
-# if __name__ == "__main__":
-#     run_random_search("KQ_model_ready.csv", "KQ", n_iter=30, cv_splits=5)
-#     run_random_search("QQ_model_ready.csv", "QQ", n_iter=30, cv_splits=5)
+    run_random_search("KQ_model_ready.csv", "KQ", n_iter=30, cv_splits=5)
+    run_random_search("QQ_model_ready.csv", "QQ", n_iter=30, cv_splits=5)
