@@ -2,3 +2,14 @@
 # generated data
 merged_all.csv
 panel_data.csv
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+*.joblib
+*.pkl
+data/*.csv  # if you don't want to track large data files
