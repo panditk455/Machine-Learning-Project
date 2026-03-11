@@ -1,0 +1,24 @@
+{
+  "target": "ConclusionClass",
+  "test_accuracy": 0.6908517350157729,
+  "roc_auc_macro": 0.8434579787458599,
+  "cv_mean": 0.685646687697161,
+  "cv_std": 0.015987098781954617,
+  "features": [
+    "Difficulty",
+    "Intervening bullets (min)",
+    "Intervening bullets (max)",
+    "Q2 Quality (prescreen)",
+    "Caliber Q1",
+    "Subsession  Q2-K3",
+    "Phase",
+    "Q1 Quality (Voted)",
+    "Caliber Q2-K3",
+    "Q1 Quality (prescreen)",
+    "Type",
+    "Q2 Quality (Voted)",
+    "Assigns (total)",
+    "Assigns (Baseline+Repeat)",
+    "Assigns (Baseline)"
+  ]
+}

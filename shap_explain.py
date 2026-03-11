@@ -319,34 +319,19 @@ if __name__ == "__main__":
 
     # ---------- QQ ----------
     run_shap(
-        model_path="rf_outputs/rf_randomsearch_bestmodel_QQ_FULL.joblib",
+        model_path="rf_outputs/rf_randomsearch_bestmodel_QQ.joblib",
         csv_path="QQ_model_ready.csv",
         label="QQ_FULL",
         extra_drop_cols=[],  # FULL keeps everything
         waterfall_row_idx=0
     )
 
+    
+    # ----------  KQ ----------
     run_shap(
-        model_path="rf_outputs/rf_randomsearch_bestmodel_QQ_OBJECTIVE.joblib",
-        csv_path="QQ_model_ready.csv",
-        label="QQ_OBJECTIVE",
-        extra_drop_cols=["Difficulty", "Comparability", "Phase"],
-        waterfall_row_idx=0
-    )
-
-    # ---------- RQ (or KQ) ----------
-    run_shap(
-        model_path="rf_outputs/rf_randomsearch_bestmodel_KQ_FULL.joblib",
+        model_path="rf_outputs/rf_randomsearch_bestmodel_KQ.joblib",
         csv_path="KQ_model_ready.csv",
         label="RQ_FULL",
         extra_drop_cols=[],
-        waterfall_row_idx=0
-    )
-
-    run_shap(
-        model_path="rf_outputs/rf_randomsearch_bestmodel_KQ_OBJECTIVE.joblib",
-        csv_path="KQ_model_ready.csv",
-        label="RQ_OBJECTIVE",
-        extra_drop_cols=["Difficulty", "Comparability", "Phase"],
         waterfall_row_idx=0
     )

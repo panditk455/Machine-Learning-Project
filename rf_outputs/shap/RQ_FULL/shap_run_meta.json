@@ -1,0 +1,17 @@
+{
+  "label":"RQ_FULL",
+  "model_path":"rf_outputs\/rf_randomsearch_bestmodel_KQ.joblib",
+  "csv_path":"KQ_model_ready.csv",
+  "extra_drop_cols":[
+
+  ],
+  "test_rows_used":315,
+  "waterfall_row_original_index":1284,
+  "waterfall_row_position_in_test_sample":0,
+  "predicted_class":"Match",
+  "predicted_proba":{
+    "Inconclusive":0.0075368482,
+    "Match":0.9912100299,
+    "NonMatch":0.0012531218
+  }
+}
