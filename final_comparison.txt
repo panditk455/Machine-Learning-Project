@@ -1,0 +1,106 @@
+Best model by dataset
+KQ
+
+XGBoost is the clear winner:
+
+Accuracy: 0.8077
+
+CV mean: 0.8266
+
+RF and LogReg are much lower and very close:
+
+RF: 0.6810
+
+LogReg: 0.6762
+
+QQ
+
+All three models are almost tied on accuracy:
+
+XGBoost: 0.6916
+
+RF: 0.6912
+
+LogReg: 0.6909
+
+XGBoost still has the best CV mean:
+
+0.7228 vs RF 0.6995 vs LogReg 0.6856
+
+What this means
+For KQ
+
+Your data has nonlinear structure that XGBoost captures much better than RF or Logistic Regression.
+
+That supports a conclusion like:
+
+KQ examiner decisions appear to depend on more complex feature interactions, since gradient-boosted trees substantially outperform both linear and bagged-tree baselines.
+
+For QQ
+
+The three models perform almost the same on test accuracy, which suggests:
+
+QQ decisions may be harder to separate, or the available features contain less exploitable nonlinear structure.
+
+Since XGBoost still has the highest CV mean, I would still treat it as the strongest overall QQ model, but the margin is much smaller.
+
+Important nuance: ROC-AUC vs accuracy
+
+Your table has an interesting pattern:
+
+LogReg has the highest ROC-AUC on both KQ and QQ
+
+But XGBoost has the best accuracy, especially on KQ
+
+That usually means:
+
+Logistic Regression ranks class probabilities reasonably well
+
+But XGBoost makes better final class assignments at the default decision rule
+
+So in your writeup, you can say:
+
+Logistic Regression achieved strong macro ROC-AUC, indicating competitive probability ranking, but XGBoost achieved the best classification accuracy and cross-validated performance, especially on KQ.
+
+That is a good, nuanced result.
+
+Clean final takeaway
+
+You can summarize the model comparison like this:
+
+Across both datasets, XGBoost was the strongest overall classifier. Its advantage was especially large on KQ, where it achieved 0.808 test accuracy compared with 0.681 for Random Forest and 0.676 for Logistic Regression. On QQ, all three models performed similarly on test accuracy (~0.691), though XGBoost still had the highest cross-validated mean performance.
+
+Which model should you use as your final model?
+
+Use:
+
+KQ final model: XGBoost
+
+QQ final model: XGBoost, with the note that RF and LogReg are nearly tied on test accuracy
+
+If you want one unified choice across the whole project, choose XGBoost.
+
+What to include in your report
+
+At minimum, include:
+
+the comparison table you just generated
+
+the accuracy figure
+
+one confusion matrix for the best KQ model
+
+one confusion matrix for the best QQ model
+
+SHAP or feature-importance plots for XGBoost
+
+That gives you a complete modeling section.
+
+One polished table format for your paper
+Dataset	Model	Accuracy	ROC-AUC (macro)	CV Mean
+KQ	Logistic Regression	0.676	0.849	0.657
+KQ	Random Forest	0.681	—	0.634
+KQ	XGBoost	0.808	0.764	0.827
+QQ	Logistic Regression	0.691	0.843	0.686
+QQ	Random Forest	0.691	—	0.700
+QQ	XGBoost	0.692	0.817	0.723
