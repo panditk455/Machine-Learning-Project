@@ -1,0 +1,9 @@
+{
+  "waterfall_row": 0,
+  "predicted_class": "Match",
+  "predicted_proba": {
+    "Inconclusive": 0.0109,
+    "Match": 0.9838,
+    "NonMatch": 0.0053
+  }
+}
