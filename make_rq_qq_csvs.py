@@ -63,7 +63,7 @@ cset = cset.rename(columns={cset_cset: "Cset"})
 cset_keep = [
     "Cset",
     "Type",
-    "Mating",  # NOTE: ground truth — good for analysis, but remove for ML to avoid leakage
+    "Mating",  
     "Assigns (Baseline)",
     "Assigns (Baseline+Repeat)",
     "Assigns (total)",
@@ -78,8 +78,8 @@ cset_keep = [
     "Intervening bullets (max)",
     "Cset Category (Detailed)",
     "Caliber Q1",
-    "Caliber Q2-K3 FAID",  # sometimes this is named slightly differently
-    "Caliber Q2-K3",       # fallback if the FAID version isn't present
+    "Caliber Q2-K3 FAID", 
+    "Caliber Q2-K3",      
 ]
 cset_small = keep_existing(cset, cset_keep)
 
@@ -110,7 +110,7 @@ kq_small = kq_small.dropna(subset=["ConclusionClass"])
 
 kq_merged = kq_small.merge(cset_small, on="Cset", how="left")
 
-# Drop AnonID from the final exported CSV (per your request)
+# Drop AnonID from the final exported CSV
 kq_out = keep_existing(
     kq_merged,
     ["Cset", "Phase", "ConclusionRaw", "Difficulty", "Comparability", "ConclusionClass"] + cset_keep

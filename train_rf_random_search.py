@@ -31,28 +31,6 @@ def build_preprocessor(X: pd.DataFrame) -> ColumnTransformer:
     )
 
 
-# def clean_df(csv_path: str):
-#     df = pd.read_csv(csv_path)
-
-#     # Drop duplicate columns
-#     df = df.loc[:, ~df.columns.duplicated()]
-
-#     # Drop columns that are entirely empty
-#     all_nan_cols = [c for c in df.columns if df[c].isna().all()]
-#     if all_nan_cols:
-#         print("Dropping all-NaN columns:", all_nan_cols)
-#         df = df.drop(columns=all_nan_cols)
-
-#     y = df["ConclusionClass"].copy()
-
-#     drop_cols = ["ConclusionClass", "ConclusionRaw", "AnonID"]
-#     X = df.drop(columns=[c for c in drop_cols if c in df.columns])
-
-#     # Drop Cset identifier columns (Cset, Cset.1, etc.)
-#     X = X.drop(columns=[c for c in X.columns if str(c).lower().startswith("cset")], errors="ignore")
-
-#     return X, y
-
 def clean_df(csv_path: str, extra_drop_cols=None):
     extra_drop_cols = extra_drop_cols or []
 
@@ -118,8 +96,7 @@ def run_random_search(csv_path: str, label: str, extra_drop_cols=None, n_iter: i
         ("rf", rf),
     ])
 
-    # ---- Small, sensible search space ----
-    # Note: use "rf__" prefix because it's inside the Pipeline
+    
     param_dist = {
         "rf__n_estimators": [200, 400, 600, 800, 1000],
         "rf__max_features": ["sqrt", "log2", 0.5],

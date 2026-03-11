@@ -29,8 +29,8 @@ import shap
 import warnings
 warnings.filterwarnings("ignore")
 
-# ── 0. CONFIG ─────────────────────────────────────────────────────────────────
-DATA_PATH = "QQ_model_ready.csv"    # ← point to your CSV
+# ── CONFIG ─────────────────────────────────────────────────────────────────
+DATA_PATH = "QQ_model_ready.csv"    
 SEED      = 42
 
 FEATURE_COLS = [
@@ -56,7 +56,7 @@ TARGETS = {
     "ConclusionRaw":   "qq_xgb_ConclusionRaw",      # ID / LeanID / Excl / LeanExcl / Insuff
 }
 
-# ── 1. LOAD ───────────────────────────────────────────────────────────────────
+# ──LOAD ───────────────────────────────────────────────────────────────────
 df = pd.read_csv(DATA_PATH)
 print(f"Loaded {df.shape[0]} rows × {df.shape[1]} cols\n")
 
@@ -69,7 +69,7 @@ else:
     print("✅  All required columns found.\n")
 
 
-# ── 2. RUNNER FUNCTION ────────────────────────────────────────────────────────
+# ──  RUNNER FUNCTION ────────────────────────────────────────────────────────
 def run_pipeline(df, feature_cols, target_col, out_dir):
 
     os.makedirs(out_dir, exist_ok=True)
@@ -80,7 +80,7 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
     print(f"  TARGET: {target_col}  →  {out_dir}")
     print(f"{'='*60}")
 
-    # ── 2a. Clean ────────────────────────────────────────────────────────────
+    # ──  Clean ────────────────────────────────────────────────────────────
     subset = df.dropna(subset=feature_cols + [target_col]).copy()
     print(f"Rows after dropna: {subset.shape[0]}")
     print(f"Target distribution:\n{subset[target_col].value_counts()}\n")
@@ -88,13 +88,13 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
     X = subset[feature_cols].copy()
     y_raw = subset[target_col].copy()
 
-    # ── 2b. Encode target ────────────────────────────────────────────────────
+    # ── Encode target ────────────────────────────────────────────────────
     le = LabelEncoder()
     y = le.fit_transform(y_raw)
     class_names = list(le.classes_)
     print(f"Classes ({len(class_names)}): {class_names}")
 
-    # ── 2c. Encode features ──────────────────────────────────────────────────
+    # ──  Encode features ──────────────────────────────────────────────────
     cat_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
     num_cols = X.select_dtypes(include=[np.number]).columns.tolist()
     print(f"Categorical: {cat_cols}")
@@ -105,13 +105,13 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
         X[cat_cols] = oe.fit_transform(X[cat_cols].astype(str))
     X = X.astype(float)
 
-    # ── 2d. Split ────────────────────────────────────────────────────────────
+    # ──  Split ────────────────────────────────────────────────────────────
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=SEED, stratify=y
     )
     print(f"Train: {X_train.shape[0]}  |  Test: {X_test.shape[0]}")
 
-    # ── 2e. Model ────────────────────────────────────────────────────────────
+    # ──  Model ────────────────────────────────────────────────────────────
     xgb = XGBClassifier(
         n_estimators      = 300,
         max_depth         = 5,
@@ -127,7 +127,7 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
     )
     xgb.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=50)
 
-    # ── 2f. Evaluate ─────────────────────────────────────────────────────────
+    # ──  Evaluate ─────────────────────────────────────────────────────────
     y_pred  = xgb.predict(X_test)
     y_proba = xgb.predict_proba(X_test)
 
@@ -183,7 +183,7 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
     with open(os.path.join(out_dir, "metrics.json"), "w") as f:
         json.dump(metrics, f, indent=2)
 
-    # ── 2g. Confusion matrix ─────────────────────────────────────────────────
+    # ── Confusion matrix ─────────────────────────────────────────────────
 
     cm   = confusion_matrix(y_test, y_pred, labels=present_labels)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=present_names)
@@ -195,7 +195,7 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
     plt.savefig(os.path.join(out_dir, "confusion_matrix.png"), dpi=150)
     plt.close()
 
-    # ── 2h. Feature importance ───────────────────────────────────────────────
+    # ──  Feature importance ───────────────────────────────────────────────
     fi = pd.Series(xgb.feature_importances_, index=feature_cols).sort_values(ascending=False)
     fig, ax = plt.subplots(figsize=(8, max(4, len(feature_cols) * 0.4)))
     fi.plot.barh(ax=ax, color="steelblue")
@@ -206,7 +206,7 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
     plt.savefig(os.path.join(out_dir, "feature_importance.png"), dpi=150)
     plt.close()
 
-    # ── 2i. SHAP ─────────────────────────────────────────────────────────────
+    # ──SHAP ─────────────────────────────────────────────────────────────
     print("\nComputing SHAP values…")
     explainer   = shap.TreeExplainer(xgb)
     shap_values = explainer.shap_values(X_test)

@@ -11,9 +11,7 @@ from sklearn.model_selection import train_test_split
 import scipy.sparse as sp
 
 
-# -------------------------
-# Keep this consistent with your training script
-# -------------------------
+
 def clean_df(csv_path: str, extra_drop_cols=None):
     extra_drop_cols = extra_drop_cols or []
 
@@ -33,10 +31,10 @@ def clean_df(csv_path: str, extra_drop_cols=None):
     drop_cols = ["ConclusionClass", "ConclusionRaw", "AnonID"]
     X = df.drop(columns=[c for c in drop_cols if c in df.columns])
 
-    # Drop Cset identifier columns (Cset, Cset.1, etc.)
+    # Drop Cset identifier columns 
     X = X.drop(columns=[c for c in X.columns if str(c).lower().startswith("cset")], errors="ignore")
 
-    # Drop additional columns for variants (e.g., objective-only)
+    # Drop additional columns for variants 
     X = X.drop(columns=[c for c in extra_drop_cols if c in X.columns], errors="ignore")
 
     return X, y
@@ -51,10 +49,7 @@ def get_feature_names(preprocess, X: pd.DataFrame):
         names = preprocess.get_feature_names_out()
         return list(names)
     except Exception:
-        # Fallback: try older sklearn behavior
         try:
-            # Sometimes transformers have get_feature_names_out but CT doesn't
-            # We'll just create generic names
             n_features = preprocess.transform(X.iloc[:1]).shape[1]
             return [f"f{i}" for i in range(n_features)]
         except Exception:
@@ -220,7 +215,6 @@ def run_shap(
     print(f"\nLoading model: {model_path}")
     model = joblib.load(model_path)
 
-    # Your saved model is a Pipeline(preprocess -> rf)
     preprocess = model.named_steps["preprocess"]
     rf = model.named_steps["rf"]
 
@@ -231,22 +225,16 @@ def run_shap(
         X, y, test_size=test_size, random_state=random_state, stratify=y
     )
 
-    # Optional: subsample test set for speed/clarity
+    
     if len(X_test) > max_test_rows:
         X_test = X_test.sample(n=max_test_rows, random_state=random_state)
         y_test = y_test.loc[X_test.index]
-
-    # # Transform to numeric feature space used by RF
-    # X_test_trans = preprocess.transform(X_test)
-
-    # # Feature names after preprocessing/one-hot
-    # feature_names = get_feature_names(preprocess, X_train)
 
     # Transform to numeric feature space used by RF
     X_train_trans = preprocess.transform(X_train)
     X_test_trans  = preprocess.transform(X_test)
 
-    # IMPORTANT: make them dense float64 for SHAP
+    #  make them dense float64 for SHAP
     X_train_trans = to_dense_float(X_train_trans)
     X_test_trans  = to_dense_float(X_test_trans)
 
@@ -254,18 +242,10 @@ def run_shap(
     feature_names = get_feature_names(preprocess, X_train)
 
     # Class names
-    # class_names = list(getattr(model, "classes_", []))
     class_names = list(rf.classes_)
     if not class_names:
         # Pipeline doesn't have classes_, but rf does
         class_names = list(rf.classes_)
-
-    # Build explainer (TreeExplainer is best for RF)
-    # explainer = shap.TreeExplainer(rf)
-
-    
-    # # Compute SHAP values for multiclass
-    # shap_values = explainer.shap_values(X_test_trans)
 
     # Build explainer (TreeExplainer for RF) using background data
     explainer = shap.TreeExplainer(rf, data=X_train_trans)

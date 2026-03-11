@@ -117,7 +117,7 @@ def train_rf(csv_path: str, label: str, do_oob_tuning=True):
 
     X, y = clean_df(csv_path)
 
-    # Train/test split (row-wise; if you later keep AnonID, switch to GroupShuffleSplit)
+    # Train/test split (row-wise)
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
     )
