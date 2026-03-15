@@ -132,6 +132,8 @@ Run the main modeling workflow using the prepared datasets
 
 Since KQ_model_ready.csv and QQ_model_ready.csv are already included, you can directly run the training scripts.
 
+Might need a miniconda Kernal that would have all the python packages downloaded and ready to go. 
+
 If needed, install dependencies with:
 
 ```bash
