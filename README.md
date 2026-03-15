@@ -126,7 +126,15 @@ Recommended Python packages include:
 - `shap`
 - `scipy`
 
+## Run Code
+
+Run the main modeling workflow using the prepared datasets
+
+Since KQ_model_ready.csv and QQ_model_ready.csv are already included, you can directly run the training scripts.
+
 If needed, install dependencies with:
 
 ```bash
 pip install pandas numpy scikit-learn matplotlib xgboost shap scipy
+
+
