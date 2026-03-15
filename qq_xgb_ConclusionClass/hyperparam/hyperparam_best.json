@@ -1,0 +1,6 @@
+{
+  "best_max_depth": 3,
+  "best_learning_rate": 0.01,
+  "best_accuracy": 0.7196,
+  "best_auc": 0.8507
+}
