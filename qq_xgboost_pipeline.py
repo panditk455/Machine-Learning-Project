@@ -1,15 +1,3 @@
-"""
-XGBoost Pipeline — QQ Bullet Black Box Dataset
-Version A only → target: ConclusionClass  (Match / NonMatch / Inconclusive)
-
-Features:
-    Difficulty, Intervening bullets (min), Intervening bullets (max),
-    Q2 Quality (prescreen), Caliber Q1, Subsession Q2-K3, Phase,
-    Q1 Quality (Voted), Caliber Q2-K3, Q1 Quality (prescreen),
-    Type, Q2 Quality (Voted), Assigns (total),
-    Assigns (Baseline+Repeat), Assigns (Baseline)
-"""
-
 import pandas as pd
 import numpy as np
 import json, os
@@ -28,7 +16,6 @@ import shap
 import warnings
 warnings.filterwarnings("ignore")
 
-# ── CONFIG ─────────────────────────────────────────────────────────────────
 DATA_PATH = "QQ_model_ready.csv"
 SEED      = 42
 
@@ -53,13 +40,12 @@ FEATURE_COLS = [
 TARGET_COL = "ConclusionClass"
 OUT_DIR    = "qq_xgb_ConclusionClass"
 
-# ── HYPERPARAMETER GRID ────────────────────────────────────────────────────
+# Hyperparameter grid for tuning
 PARAM_GRID = {
     "max_depth":     [3, 5, 7, 9],
     "learning_rate": [0.01, 0.05, 0.1, 0.3],
 }
 
-# ── LOAD ───────────────────────────────────────────────────────────────────
 df = pd.read_csv(DATA_PATH)
 print(f"Loaded {df.shape[0]} rows × {df.shape[1]} cols\n")
 
@@ -71,7 +57,7 @@ else:
     print("✅  All required columns found.\n")
 
 
-# ── HYPERPARAMETER SEARCH ──────────────────────────────────────────────────
+# Hyperparameter search function
 def run_hyperparam_search(df, feature_cols, target_col, out_dir, param_grid):
 
     hp_dir = os.path.join(out_dir, "hyperparam")
@@ -147,7 +133,7 @@ def run_hyperparam_search(df, feature_cols, target_col, out_dir, param_grid):
             done += 1
             print(f"  [{done}/{total}] max_depth={md}, lr={lr} → acc={acc:.4f}, auc={auc:.4f}")
 
-    # ── Line chart: accuracy vs learning_rate, one line per max_depth ─────
+    # Plotting
     fig, ax = plt.subplots(figsize=(8, 5))
     for i, md in enumerate(max_depths):
         ax.plot(learning_rates, acc_grid[i], marker="o", label=f"max_depth={md}")
@@ -160,7 +146,7 @@ def run_hyperparam_search(df, feature_cols, target_col, out_dir, param_grid):
     plt.savefig(os.path.join(hp_dir, "hyperparam_accuracy_lines.png"), dpi=150)
     plt.close()
 
-    # ── Save best combo ────────────────────────────────────────────────────
+    # Saving best hyperparams
     best_idx = np.unravel_index(np.argmax(acc_grid), acc_grid.shape)
     best = {
         "best_max_depth"    : max_depths[best_idx[0]],
@@ -177,7 +163,7 @@ def run_hyperparam_search(df, feature_cols, target_col, out_dir, param_grid):
     print(f"   Hyperparam plots saved to {hp_dir}/\n")
 
 
-# ── RUNNER FUNCTION ────────────────────────────────────────────────────────
+# Main pipeline function
 def run_pipeline(df, feature_cols, target_col, out_dir):
 
     os.makedirs(out_dir, exist_ok=True)
@@ -188,38 +174,37 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
     print(f"  TARGET: {target_col}  →  {out_dir}")
     print(f"{'='*60}")
 
-    # ── Clean ─────────────────────────────────────────────────────────────
+    # Clean
     subset = df.dropna(subset=feature_cols + [target_col]).copy()
     print(f"Rows after dropna: {subset.shape[0]}")
     print(f"Target distribution:\n{subset[target_col].value_counts()}\n")
 
-    X     = subset[feature_cols].copy()
+    X = subset[feature_cols].copy()
     y_raw = subset[target_col].copy()
 
-    # ── Encode target ─────────────────────────────────────────────────────
-    le          = LabelEncoder()
-    y           = le.fit_transform(y_raw)
+    # Encode target
+    le = LabelEncoder()
+    y = le.fit_transform(y_raw)
     class_names = list(le.classes_)
     print(f"Classes ({len(class_names)}): {class_names}")
 
-    # ── Encode features ───────────────────────────────────────────────────
+    # Encode features
     cat_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
     num_cols = X.select_dtypes(include=[np.number]).columns.tolist()
     print(f"Categorical: {cat_cols}")
-    print(f"Numeric    : {num_cols}")
+    print(f"Numeric: {num_cols}")
 
     if cat_cols:
         oe = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
         X[cat_cols] = oe.fit_transform(X[cat_cols].astype(str))
     X = X.astype(float)
 
-    # ── Split ─────────────────────────────────────────────────────────────
+    # Data split
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=SEED, stratify=y
     )
     print(f"Train: {X_train.shape[0]}  |  Test: {X_test.shape[0]}")
 
-    # ── Model ─────────────────────────────────────────────────────────────
     xgb = XGBClassifier(
         n_estimators      = 300,
         max_depth         = 5,
@@ -235,7 +220,6 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
     )
     xgb.fit(X_train, y_train, eval_set=[(X_test, y_test)], verbose=50)
 
-    # ── Evaluate ──────────────────────────────────────────────────────────
     y_pred  = xgb.predict(X_test)
     y_proba = xgb.predict_proba(X_test)
 
@@ -259,7 +243,7 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
         auc = None
         print(f"ROC-AUC skipped: {e}")
 
-    # ── Cross-validation ──────────────────────────────────────────────────
+    # Cross validation (only on classes with ≥5 samples to avoid errors)
     X_cv_reset   = X.reset_index(drop=True)
     y_cv_series  = pd.Series(y)
     class_counts = y_cv_series.value_counts()
@@ -285,7 +269,7 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
     with open(os.path.join(out_dir, "metrics.json"), "w") as f:
         json.dump(metrics, f, indent=2)
 
-    # ── Confusion matrix ──────────────────────────────────────────────────
+    # Confusion matrix
     cm   = confusion_matrix(y_test, y_pred, labels=present_labels)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=present_names)
     fig, ax = plt.subplots(figsize=(max(5, len(present_names) * 1.5), max(4, len(present_names) * 1.2)))
@@ -296,7 +280,7 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
     plt.savefig(os.path.join(out_dir, "confusion_matrix.png"), dpi=150)
     plt.close()
 
-    # ── Feature importance ────────────────────────────────────────────────
+    # Feature importance
     fi = pd.Series(xgb.feature_importances_, index=feature_cols).sort_values(ascending=False)
     fig, ax = plt.subplots(figsize=(8, max(4, len(feature_cols) * 0.4)))
     fi.plot.barh(ax=ax, color="steelblue")
@@ -307,7 +291,7 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
     plt.savefig(os.path.join(out_dir, "feature_importance.png"), dpi=150)
     plt.close()
 
-    # ── SHAP ──────────────────────────────────────────────────────────────
+    # SHAP values and plots
     print("\nComputing SHAP values…")
     explainer   = shap.TreeExplainer(xgb)
     shap_values = explainer.shap_values(X_test)
@@ -365,8 +349,6 @@ def run_pipeline(df, feature_cols, target_col, out_dir):
 
     print(f"✅  Done — outputs saved to {out_dir}/\n")
 
-
-# ── RUN ───────────────────────────────────────────────────────────────────
 df = pd.read_csv(DATA_PATH)
 
 run_hyperparam_search(df, FEATURE_COLS, TARGET_COL, OUT_DIR, PARAM_GRID)
